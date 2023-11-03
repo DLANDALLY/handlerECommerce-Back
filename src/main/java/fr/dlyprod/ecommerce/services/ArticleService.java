@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static fr.dlyprod.ecommerce.services.utils.ArticleUtils.convertToArticle;
 import static fr.dlyprod.ecommerce.services.utils.ArticleUtils.checkPhoto;
@@ -43,5 +44,20 @@ public class ArticleService {
         Article article = getArticleById(id);
 
         return articleRepository.save(convertToArticle(article, articlerForm));
+    }
+
+    public Article findOne(Long id) {
+        return articleRepository.findById(id).orElseThrow();
+    }
+
+    //TODO add in exception handler
+    public void delete(Long id) {
+        try{
+            Article article = findOne(id);
+            articleRepository.delete(article);
+        }catch (Exception e){
+            throw e;
+        }
+
     }
 }
