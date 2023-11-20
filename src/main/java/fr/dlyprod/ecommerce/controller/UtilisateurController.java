@@ -22,12 +22,6 @@ public class UtilisateurController {
     @Autowired
     private UserFormValidator userFormValidator;
 
-//    @Autowired
-//    public UtilisateurController(UtilisateurService utilisateurService, UtilisateurFormValidator utilisateurFormValidator) {
-//        this.utilisateurService = utilisateurService;
-//        this.utilisateurFormValidator = utilisateurFormValidator;
-//    }
-
     @GetMapping
     public ResponseEntity<List<Utilisateur>> getAllUtilisateurs(){
         List<Utilisateur> users = userService.getAllUtilisateur();
