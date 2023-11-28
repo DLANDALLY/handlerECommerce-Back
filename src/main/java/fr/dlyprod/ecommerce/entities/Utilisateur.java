@@ -31,7 +31,7 @@ public class Utilisateur {
     @Column(length = 50, nullable = false, unique = true)
     private String telephone;
     @OneToMany(mappedBy = "utilisateur")
-    private Set<Adresse> adresses;
+    private Set<Address> adresses;
     @OneToMany(mappedBy = "utilisateur",cascade = CascadeType.ALL)
     private Set<Commande> commandes;
     @OneToMany(mappedBy = "utilisateur",cascade = CascadeType.ALL)

@@ -2,9 +2,6 @@ package fr.dlyprod.ecommerce.validator;
 
 import fr.dlyprod.ecommerce.entities.Article;
 import fr.dlyprod.ecommerce.forms.ArticlerForm;
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;

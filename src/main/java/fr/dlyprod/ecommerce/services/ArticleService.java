@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static fr.dlyprod.ecommerce.services.utils.ArticleUtils.convertToArticle;
 import static fr.dlyprod.ecommerce.services.utils.ArticleUtils.checkPhoto;
@@ -28,7 +27,7 @@ public class ArticleService {
         return articleRepository.findById(id).orElse(null);
     }
 
-    public Article createUtilisateur(ArticlerForm articlerForm) {
+    public Article createArticle(ArticlerForm articlerForm) {
         //TODO ajt d'une method check photo/video
         return articleRepository.save(convertToArticle(articlerForm));
     }

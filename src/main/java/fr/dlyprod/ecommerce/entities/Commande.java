@@ -22,10 +22,10 @@ public class Commande {
     private double fraisExpedition;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "adresse_facturation_id", referencedColumnName = "id")
-    private Adresse adresseFacturation;
+    private Address addressFacturation;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "adresse_livraison_id", referencedColumnName = "id")
-    private Adresse adresseLivraison;
+    private Address address;
     @ManyToOne
     @JoinColumn(name = "utilisateur_id", foreignKey = @ForeignKey(name = "fk_commande_utilisateur_id"),referencedColumnName = "id")
     private Utilisateur utilisateur;

@@ -11,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/article")
@@ -43,7 +42,7 @@ public class ArticleController {
         if (result.hasErrors())
             return new ResponseEntity<>("Une erreur est survenue verifiés le champs :"+result.getFieldError().getField(), HttpStatus.CONFLICT);
 
-        articleService.createUtilisateur(articlerForm);
+        articleService.createArticle(articlerForm);
         return new ResponseEntity<>("Article créé avec succès.", HttpStatus.CREATED);
     }
 

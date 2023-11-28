@@ -5,9 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Table(name = "adresse")
 @Setter
 @Getter
-public class Adresse {
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,6 +29,6 @@ public class Adresse {
             referencedColumnName = "id")
     private Utilisateur utilisateur;
 
-    @OneToOne(mappedBy = "adresseLivraison")
+    @OneToOne(mappedBy = "address")
     private Commande commande;
 }
