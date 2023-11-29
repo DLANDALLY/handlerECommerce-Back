@@ -1,6 +1,7 @@
 package fr.dlyprod.ecommerce.controller;
 
 import fr.dlyprod.ecommerce.entities.Address;
+import fr.dlyprod.ecommerce.entities.Article;
 import fr.dlyprod.ecommerce.forms.AddressForm;
 import fr.dlyprod.ecommerce.forms.ArticlerForm;
 import fr.dlyprod.ecommerce.services.AddressService;
@@ -20,7 +21,7 @@ public class AddressController {
     private AddressService addressService;
 
     @Autowired
-    private AddressFormValidator articleFormValidator;
+    private AddressFormValidator addressFormValidator;
 
     @GetMapping
     public ResponseEntity<List<Address>> getAddress(){
@@ -32,11 +33,27 @@ public class AddressController {
 
     @PostMapping
     public ResponseEntity<?> createAddress(@RequestBody AddressForm addressForm, BindingResult result) {
-        articleFormValidator.validate(addressForm, result);
+        addressFormValidator.validate(addressForm, result);
         if (result.hasErrors())
-            return new ResponseEntity<>("Une erreur est survenue verifiés le champs :"+result.getFieldError().getField(), HttpStatus.CONFLICT);
+            //return new ResponseEntity<>("Une erreur est survenue verifiés le champs :"+result.getFieldError().getField(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(result.getFieldError().getDefaultMessage(), HttpStatus.CONFLICT);
 
         addressService.createAddress(addressForm);
-        return new ResponseEntity<>("Article créé avec succès.", HttpStatus.CREATED);
+        return new ResponseEntity<>("Adresse créé avec succès.", HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateArticle(
+            @PathVariable Long id, @RequestBody AddressForm addressForm, BindingResult result) {
+        addressFormValidator.validate(addressForm, result);
+        if (result.hasErrors())
+            return new ResponseEntity<>(result.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);
+
+        try {
+            Address updatedAddress = addressService.updateAddress(id, addressForm);
+            return new ResponseEntity<>("Adresse à bien été modifier.", HttpStatus.ACCEPTED);}
+        //TODO Ajouter gestion de exception
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());}
     }
 }

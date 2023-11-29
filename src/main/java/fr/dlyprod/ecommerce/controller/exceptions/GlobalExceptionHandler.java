@@ -1,4 +1,4 @@
-package fr.dlyprod.ecommerce.controller;
+package fr.dlyprod.ecommerce.controller.exceptions;
 
 import fr.dlyprod.ecommerce.exceptions.user.EmailAlreadyExistsException;
 import fr.dlyprod.ecommerce.exceptions.user.TelephoneAlreadyExistsException;

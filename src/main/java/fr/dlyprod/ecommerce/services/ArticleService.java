@@ -19,6 +19,7 @@ import static fr.dlyprod.ecommerce.services.utils.ArticleUtils.checkVideo;
 public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
+
     public List<Article> getAllArticle() {
         return articleRepository.findAll();
     }
