@@ -44,11 +44,4 @@ public class Utilisateur {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    //TODO adapter la method
-    /*public boolean verifierMotDePasse(String motDePasse) {
-        // Vérifier si le mot de passe correspond au mot de passe crypté en base de données
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return passwordEncoder.matches(motDePasse, this.motDePasse);
-    }*/
 }

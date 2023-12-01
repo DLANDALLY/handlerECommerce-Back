@@ -29,4 +29,9 @@ public class TelephoneAlreadyExistsException extends RuntimeException {
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
+
+    public  String getMessage(){
+        return "Le "+ this.telephone +" est déjà utilisé:";
+    }
+
 }

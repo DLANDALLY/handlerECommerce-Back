@@ -11,8 +11,12 @@ public class UserNotFoundException extends RuntimeException {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setStatus(409);
         errorResponse.setReason(this.getMessage());
-        errorResponse.setAttribute("email");
+        errorResponse.setAttribute("utilisateur");
 
         return errorResponse;
+    }
+
+    public String getMessage(){
+        return "ID "+super.getMessage()+" recherché n'existe pas";
     }
 }

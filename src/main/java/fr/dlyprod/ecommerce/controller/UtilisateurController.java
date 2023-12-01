@@ -9,13 +9,14 @@ import fr.dlyprod.ecommerce.validator.UserFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/utilisateur")
+@RequestMapping("api/v1/user")
 public class UtilisateurController {
     @Autowired
     private UserService userService;
@@ -40,11 +41,16 @@ public class UtilisateurController {
     public ResponseEntity<?> createUtilisateur(@RequestBody UserForm userForm, BindingResult result) {
         userFormValidator.validate(userForm, result);
         if (result.hasErrors())
-            return new ResponseEntity<>("Une erreur est survenue verifiés le champs :"+result.getFieldError().getField(), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(result.getFieldError().getDefaultMessage(), HttpStatus.CONFLICT);
+        try {
+            userService.createUser(userForm);
+        }catch (EmailAlreadyExistsException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }catch (TelephoneAlreadyExistsException e){
+            return new ResponseEntity<>( e.getMessage(), HttpStatus.CONFLICT);
+        }
 
-        Utilisateur createdUser = userService.createUtilisateur(userForm);
         return new ResponseEntity<>("Utilisateur créé avec succès.", HttpStatus.CREATED);
-
     }
 
     @PutMapping("/{id}")
@@ -52,16 +58,17 @@ public class UtilisateurController {
             @PathVariable Long id, @RequestBody UserForm userForm, BindingResult result) {
         userFormValidator.validate(userForm, result);
         if (result.hasErrors())
-            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
+            //return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(result.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);
 
         try {
-            Utilisateur updatedUser = userService.updateUtilisateur(id, userForm);
+            Utilisateur updatedUser = userService.updateUser(id, userForm);
             return new ResponseEntity<>("Utilisateur modifié avec succès.", HttpStatus.ACCEPTED);}
 
         catch (EmailAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.reject());}
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.reject().getReason());}
         catch (TelephoneAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body((e.reject()));}
+            return ResponseEntity.status(HttpStatus.CONFLICT).body((e.reject().getReason()));}
         catch (RuntimeException r) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();}
     }

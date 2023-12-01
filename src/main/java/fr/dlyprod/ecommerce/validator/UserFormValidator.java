@@ -2,6 +2,7 @@ package fr.dlyprod.ecommerce.validator;
 
 import fr.dlyprod.ecommerce.entities.Utilisateur;
 import fr.dlyprod.ecommerce.forms.UserForm;
+import fr.dlyprod.ecommerce.services.utils.UserUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -17,42 +18,48 @@ public class UserFormValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        String regexString = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         UserForm userForm = (UserForm) target;
 
-        //TODO ajouter une contrainte de size max
         // Validation pour le champ "nom"
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nom", "field.required");
-        if (userForm.getNom() != null && userForm.getNom().length() < 3) {
-            errors.rejectValue("nom", "field.minlength", new Object[]{3}, null);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nom", "lastName.empty","Le champ nom est requis");
+        if (userForm.getNom() == null || userForm.getNom().length() < 3) {
+            errors.rejectValue("nom", "lastName.minlength", new Object[]{3}, "Le nom doit comporter 3 lettres minimum");
+        }
+        if (userForm.getNom().length() > 30) {
+            errors.rejectValue("nom", "lastName.maxlength", new Object[]{3}, "Le nom doit être inférieur à 30 lettres");
         }
 
-        //TODO ajouter une contrainte de size max
         // Validation pour le champ "prenom"
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "prenom", "field.required");
-        if (userForm.getPrenom() != null && userForm.getPrenom().length() < 3) {
-            errors.rejectValue("prenom", "field.minlength", new Object[]{3}, null);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "prenom", "firstName.empty","Le champ prenom est requis");
+        if (userForm.getPrenom() == null || userForm.getPrenom().length() < 3) {
+            errors.rejectValue("prenom", "prenom.minlength", new Object[]{3}, "Le prénom doit comporter 3 lettres minimum");
+        }
+        if (userForm.getPrenom().length() > 30) {
+            errors.rejectValue("prenom", "prenom.maxlength", new Object[]{3}, "Le prenom doit être inférieur à 30 lettres");
         }
 
-        //TODO creer method pour renforcer l'authenticité
         // Validation pour le champ "email"
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "field.required");
-        if (userForm.getEmail() != null && !userForm.getEmail().matches(regexString)) {
-            errors.rejectValue("email", "field.invalid");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "email.required", "L'adresse mail est requis");
+        if (userForm.getEmail() == null) {
+            errors.rejectValue("email", "email.invalid", "l'adresse mail est requis");
+        }
+        if(!UserUtils.validerEmail(userForm.getEmail()) || userForm.getEmail() == null){
+            errors.rejectValue("email", "email.invalid", "L'adresse mail n'est pas valide");
         }
 
-        //TODO ajout de contrainte password
         // Validation pour le champ "password"
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "field.required");
-        if (userForm.getPassword() != null && userForm.getPassword().length() < 5) {
-            errors.rejectValue("password", "field.minlength", new Object[]{8}, null);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "password.required", "Le mot de passe est requis");
+        if (userForm.getPassword() == null || userForm.getPassword().length() < 5) {
+            errors.rejectValue("password", "password.size", new Object[]{8}, "Le mot de passe est null");
+        }
+        if (!UserUtils.checkPasswordConstraints(userForm.getPassword())) {
+            errors.rejectValue("password", "password.contraint", new Object[]{8}, "Le mot de passe ne respecte pas les contraintes");
         }
 
-        //TODO ajouter contrainte numero uniquement
         // Validation pour le champ "telephone"
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "telephone", "field.required");
-        if (userForm.getTelephone() != null && !isValidPhoneNumber(userForm.getTelephone())) {
-            errors.rejectValue("telephone", "field.invalid");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "telephone", "telephone.required", "Le champ telephone est requis");
+        if (userForm.getTelephone() == null || !UserUtils.isValidPhoneNumber(userForm.getTelephone())) {
+            errors.rejectValue("telephone", "telephone.invalid", "Le numero n'est pas au bon format");
         }
 
         //TODO Validator Role
@@ -62,17 +69,4 @@ public class UserFormValidator implements Validator {
         }*/
 
     }
-
-    private boolean isValidPhoneNumber(String phoneNumber) {
-        String regexStr = "^(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$";
-        return phoneNumber != null && phoneNumber.matches(regexStr);
-    }
-
-    /*private boolean isValidRole(RoleEnum roleString){
-        RoleEnum roleEnum;
-        for (String role : roleEnum){
-            if (roleString.equals(role)) return true;
-        }
-        return false;
-    }*/
 }

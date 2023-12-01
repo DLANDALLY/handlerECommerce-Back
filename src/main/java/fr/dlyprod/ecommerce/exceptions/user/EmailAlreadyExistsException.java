@@ -44,4 +44,8 @@ public class EmailAlreadyExistsException extends RuntimeException{
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getMessage(){
+        return "Le mail "+ this.email +" est déjà utilisé";
+    }
 }

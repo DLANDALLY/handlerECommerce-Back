@@ -1,5 +1,6 @@
 package fr.dlyprod.ecommerce.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ public class Address {
     @JoinColumn(name = "utilisateur_id")
     private User user;*/
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Utilisateur.class)
     @JoinColumn(name = "utilisateur_id",
             foreignKey = @ForeignKey(name = "fk_adresse_utilisateur_id"),
