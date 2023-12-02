@@ -2,6 +2,7 @@ package fr.dlyprod.ecommerce.services.utils;
 
 import fr.dlyprod.ecommerce.entities.Utilisateur;
 import fr.dlyprod.ecommerce.forms.UserForm;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.regex.Matcher;
@@ -9,6 +10,16 @@ import java.util.regex.Pattern;
 
 public class UserUtils {
 
+    private static final ModelMapper modelMapper = new ModelMapper();
+
+    /**
+     * Model Mapper
+     * @param userForm
+     * @return
+     */
+    public static Utilisateur convertirDeUtilisateur(UserForm userForm) {
+        return modelMapper.map(userForm, Utilisateur.class);
+    }
     public static Utilisateur convertToUser(UserForm userForm){
         Utilisateur user = new Utilisateur();
         user.setNom(filterCaracteres(userForm.getNom()));

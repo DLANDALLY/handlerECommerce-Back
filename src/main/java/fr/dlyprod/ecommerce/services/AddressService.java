@@ -30,8 +30,9 @@ public class AddressService {
     }
 
     public Address updateAddress(Long id, AddressForm addressForm) throws RuntimeException {
+        //TODO creer une exception pour l'adresse UserNotFoundException nest pas correct
         if (!addressRepository.existsById(id))
-            throw new UserNotFoundException("Erreur ID: "+ id +" non trouvé");
+            throw new UserNotFoundException(""+ id);
 
         Address address = getAddressById(id);
         if(address == null)
