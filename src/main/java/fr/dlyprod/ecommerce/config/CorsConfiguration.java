@@ -1,5 +1,6 @@
 package fr.dlyprod.ecommerce.config;
 
+import com.github.javafaker.Faker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -18,5 +19,10 @@ public class CorsConfiguration {
                         .allowCredentials(true);
             }
         };
+    }
+
+    @Bean
+    public Faker faker() {
+        return new Faker();
     }
 }

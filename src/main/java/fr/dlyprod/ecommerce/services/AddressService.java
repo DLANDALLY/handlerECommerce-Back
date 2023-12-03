@@ -1,5 +1,6 @@
 package fr.dlyprod.ecommerce.services;
 
+import com.github.javafaker.Faker;
 import fr.dlyprod.ecommerce.entities.Address;
 import fr.dlyprod.ecommerce.entities.Article;
 import fr.dlyprod.ecommerce.exceptions.address.AddressNotFoundException;
