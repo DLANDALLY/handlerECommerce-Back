@@ -1,19 +1,15 @@
 package fr.dlyprod.ecommerce.services;
 
-import fr.dlyprod.ecommerce.entities.Address;
 import fr.dlyprod.ecommerce.entities.Categorie;
 import fr.dlyprod.ecommerce.exceptions.CategoryException;
-import fr.dlyprod.ecommerce.exceptions.address.AddressNotFoundException;
-import fr.dlyprod.ecommerce.exceptions.user.UserNotFoundException;
 import fr.dlyprod.ecommerce.forms.CategoryForm;
 import fr.dlyprod.ecommerce.repositories.CategoryRepository;
 import fr.dlyprod.ecommerce.services.utils.CategoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
-
-import static fr.dlyprod.ecommerce.services.utils.AddressUtils.converToAddress;
 
 @Service
 public class CategoryService {
@@ -24,8 +20,9 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Categorie createCategory(CategoryForm categoryForm) {
-        //TODO Ajt contrain Nom et photo
+    public Categorie createCategory(CategoryForm categoryForm) throws IOException {
+        CategoryUtils.checkPhoto(categoryForm.getPhoto());
+
         return categoryRepository.save(CategoryUtils.convertToCategory(categoryForm));
     }
 
@@ -48,7 +45,8 @@ public class CategoryService {
         return true;
     }
 
-    private Categorie getCategoryById(Long id) {
+    public Categorie getCategoryById(Long id) {
         return categoryRepository.findById(id).orElse(null);
     }
+
 }
