@@ -23,6 +23,8 @@ public class EcommerceApplication {
 
 	@EventListener(ContextRefreshedEvent.class)
 	public void getFictives() {
-		dataGenerationService.getFakerData(100);
+		dataGenerationService.getFakerData(10);
+		dataGenerationService.getDataArticle(10);
+		dataGenerationService.getDataUser(10);
 	}
 }
