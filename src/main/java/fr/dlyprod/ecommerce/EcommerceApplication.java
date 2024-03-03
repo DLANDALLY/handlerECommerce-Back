@@ -1,7 +1,5 @@
 package fr.dlyprod.ecommerce;
 
-import fr.dlyprod.ecommerce.entities.Address;
-import fr.dlyprod.ecommerce.services.AddressService;
 import fr.dlyprod.ecommerce.services.DataGenerationService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,5 +24,7 @@ public class EcommerceApplication {
 		dataGenerationService.getFakerData(10);
 		dataGenerationService.getDataArticle(10);
 		dataGenerationService.getDataUser(10);
+		dataGenerationService.getDataCart(10);
+		//dataGenerationService.getCategorie(10);
 	}
 }

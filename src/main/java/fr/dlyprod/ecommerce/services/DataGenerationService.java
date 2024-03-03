@@ -3,12 +3,7 @@ package fr.dlyprod.ecommerce.services;
 import com.github.javafaker.Faker;
 import fr.dlyprod.ecommerce.entities.*;
 import fr.dlyprod.ecommerce.entities.enumes.RoleEnum;
-import fr.dlyprod.ecommerce.repositories.AddressRepository;
-import fr.dlyprod.ecommerce.repositories.ArticleRepository;
-import fr.dlyprod.ecommerce.repositories.UserRepository;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.OneToMany;
+import fr.dlyprod.ecommerce.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,22 +16,27 @@ public class DataGenerationService {
     private AddressRepository addressRepository;
     private ArticleRepository articleRepository;
     private UserRepository userRepository;
+    private CartRepository cartRepository;
+    private CategoryRepository categoryRepository;
+
     private final Faker faker;
 
     @Autowired
-    public DataGenerationService(AddressRepository addressRepository, ArticleRepository articleRepository, UserRepository userRepository, Faker faker) {
+    public DataGenerationService(AddressRepository addressRepository, ArticleRepository articleRepository, UserRepository userRepository, CartRepository cartRepository, CategoryRepository categoryRepository, Faker faker) {
         this.addressRepository = addressRepository;
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
+        this.cartRepository = cartRepository;
+        this.categoryRepository = categoryRepository;
         this.faker = faker;
     }
 
     /**
      * Génère des données ADDRESS
-     * @param nombreDeDonnees
+     * @param numberOfData
      */
-    public void getFakerData(int nombreDeDonnees) {
-        for (int i = 0; i < nombreDeDonnees; i++) {
+    public void getFakerData(int numberOfData) {
+        for (int i = 0; i < numberOfData; i++) {
             Address address = new Address();
             address.setNumero(Integer.parseInt(faker.address().buildingNumber()));
             address.setVille(faker.address().cityName());
@@ -48,10 +48,10 @@ public class DataGenerationService {
 
     /**
      * Genere des données ARTICLE
-     * @param nombreDeDonnees
+     * @param numberOfData
      */
-    public void getDataArticle(int nombreDeDonnees) {
-        for (int i = 0; i < nombreDeDonnees; i++) {
+    public void getDataArticle(int numberOfData) {
+        for (int i = 0; i < numberOfData; i++) {
             Article article = new Article();
             article.setNom(faker.commerce().productName());
             article.setDescription(faker.lorem().characters(30));
@@ -66,14 +66,14 @@ public class DataGenerationService {
 
     /**
      * Genere des données USER
-     * @param nombreDeDonnees
+     * @param numberOfData
      */
-    public void getDataUser(int nombreDeDonnees){
-        for (int i = 0; i < nombreDeDonnees; i++) {
+    public void getDataUser(int numberOfData){
+        for (int i = 0; i < numberOfData; i++) {
             Utilisateur user = new Utilisateur();
             user.setPrenom(faker.name().firstName());
             user.setNom(faker.name().lastName());
-            user.setActif(isBool(i));//TODO renommé la method isBool
+            user.setActif(isBool(i));
             user.setProfil(eRole());
             user.setEmail(faker.internet().emailAddress());
             user.setPassword(faker.internet().password());
@@ -92,15 +92,41 @@ public class DataGenerationService {
         private List<ArticlePanier> paniers;*/
     }
 
+    public void getDataCart(int numberOfData) {
+        for (int i = 0; i < numberOfData; i++) {
+            ArticlePanier cart = new ArticlePanier();
+            cart.setArticle(findArticleById());
+            cart.setQuantite(findStock());
+            cart.setUtilisateur(findUserById());
+
+            cartRepository.save(cart);
+        }
+    }
+
+    public void getCategorie(int numberOfData){
+        for (int i = 0; i < numberOfData; i++) {
+            Categorie categorie = new Categorie();
+            categorie.setNom(faker.commerce().productName());
+            categorie.setRemise((byte) faker.number().numberBetween(10, 80));
+            categorie.setRemiseCumulable(faker.bool().bool());
+            categorie.setArticles(getArticlesCategorie());
+            categorie.setPhoto(faker.avatar().image());
+
+            categoryRepository.save(categorie);
+        }
+    }
+
+
+    //TODO Creer une class DataGenerationUtils
     /**
      * Renvoi un nombre aleator entre 0 et number
      * @param number
      * @return int
      */
-    private int randomNumber(int number){
+    public int randomNumber(int number){
         Random random = new Random();
         int randomNumber = random.nextInt(number);
-        return randomNumber;
+        return (randomNumber < 1) ? 1 : randomNumber ;
     }
     public RoleEnum eRole(){
         RoleEnum role = null;
@@ -115,7 +141,7 @@ public class DataGenerationService {
         return (i % 2) == 0 ? true : false;
     }
 
-    private Set<Address> findAddressById(){
+    public Set<Address> findAddressById(){
         int sizeAddress = addressRepository.findAll().size();
         Set<Address> addresses = new HashSet<>();
 
@@ -125,5 +151,34 @@ public class DataGenerationService {
         }
         return addresses;
     }
+
+    public Article findArticleById(){
+        int sizeArticle = articleRepository.findAll().size();
+        Optional<Article> address = articleRepository.findById(Long.valueOf(randomNumber(sizeArticle)));
+
+        return address.get();
+    }
+
+    public Utilisateur findUserById(){
+        int sizeUser = userRepository.findAll().size();
+        int num = randomNumber(sizeUser);
+        Optional<Utilisateur> user = userRepository.findById(Long.valueOf(num));
+        return user.get();
+
+    }
+
+    public List<Article> getArticlesCategorie(){
+        List<Article> articles = new ArrayList<>();
+        for (int i = 0; i < 3; i++){
+            articles.add(findArticleById());
+        }
+        return articles;
+    }
+
+    public int findStock(){
+        return findArticleById().getStock();
+    }
+
+
 
 }
