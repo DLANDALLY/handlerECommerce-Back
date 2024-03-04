@@ -1,5 +1,7 @@
 package fr.dlyprod.ecommerce.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +33,8 @@ public class Article {
     private  Categorie categorie;
     @OneToOne(mappedBy = "article")
     private LigneDeCommande ligneDeCommande;
-    @OneToOne(mappedBy = "article")
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "article", fetch = FetchType.EAGER)
     private ArticlePanier articlePanier;
 }
