@@ -1,5 +1,6 @@
 package fr.dlyprod.ecommerce.controller;
 
+import fr.dlyprod.ecommerce.dto.ArticleSimpleDto;
 import fr.dlyprod.ecommerce.entities.Article;
 import fr.dlyprod.ecommerce.forms.ArticlerForm;
 import fr.dlyprod.ecommerce.services.ArticleService;
@@ -71,4 +72,14 @@ public class ArticleController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("simple")
+    public List<ArticleSimpleDto> articleSimpleDto(@RequestParam(defaultValue = "10")int limit){
+        return articleService.findSimpleArticle(limit);
+    }
+
+    /*@GetMapping("simple")
+    public List<ArticleSimpleDto> articleSimpleDto(){
+        return articleService.findSimpleArticle();
+    }*/
 }

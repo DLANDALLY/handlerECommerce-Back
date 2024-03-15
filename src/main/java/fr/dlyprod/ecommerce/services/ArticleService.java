@@ -1,15 +1,18 @@
 package fr.dlyprod.ecommerce.services;
 
+import fr.dlyprod.ecommerce.dto.ArticleSimpleDto;
 import fr.dlyprod.ecommerce.entities.*;
 import fr.dlyprod.ecommerce.exceptions.article.PhotoFormatException;
 import fr.dlyprod.ecommerce.exceptions.article.VideoFormatException;
 import fr.dlyprod.ecommerce.exceptions.user.UserNotFoundException;
 import fr.dlyprod.ecommerce.forms.ArticlerForm;
 import fr.dlyprod.ecommerce.repositories.ArticleRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fr.dlyprod.ecommerce.services.utils.ArticleUtils.convertToArticle;
 import static fr.dlyprod.ecommerce.services.utils.ArticleUtils.checkPhoto;
@@ -19,6 +22,8 @@ import static fr.dlyprod.ecommerce.services.utils.ArticleUtils.checkVideo;
 public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    private ModelMapper modelMapper;
 
     public List<Article> getAllArticle() {
         return articleRepository.findAll();
@@ -59,5 +64,13 @@ public class ArticleService {
             throw e;
         }
 
+    }
+
+    public List<ArticleSimpleDto> findSimpleArticle(int limit) {
+        return articleRepository.findAll().stream().limit(limit)
+                .map(s -> {
+                    var articleDto = modelMapper.map(s, ArticleSimpleDto.class);
+                    return articleDto;
+                }).collect(Collectors.toList());
     }
 }
